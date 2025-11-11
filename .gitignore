@@ -31,3 +31,6 @@ data/*.json
 # OS
 .DS_Store
 Thumbs.db
+
+# Temp
+temp/
