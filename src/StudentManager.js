@@ -142,7 +142,7 @@ class StudentManager {
     }
     
     console.log('\n' + '═'.repeat(60).cyan.bold);
-    console.log('  DAFTAR SEMUA SISWA'.bold.cyan);
+    console.log('                      DAFTAR SEMUA SISWA'.bold.cyan);
     console.log('═'.repeat(60).cyan.bold);
     
     this.#students.forEach((student, index) => {
@@ -152,7 +152,7 @@ class StudentManager {
   }
 
   /**
-   * BONUS: Mendapatkan siswa berdasarkan kelas
+   * Mendapatkan siswa berdasarkan kelas
    * @param {string} className - Nama kelas
    * @returns {Array} Array siswa dalam kelas tersebut
    */
@@ -163,7 +163,7 @@ class StudentManager {
   }
 
   /**
-   * BONUS: Mendapatkan statistik kelas
+   * Mendapatkan statistik kelas
    * @param {string} className - Nama kelas
    * @returns {Object|null} Object berisi statistik kelas atau null jika tidak ada siswa
    */

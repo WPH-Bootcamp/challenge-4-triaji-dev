@@ -14,6 +14,7 @@
  * 9. Keluar
  */
 
+// Import modules
 import readlineSync from 'readline-sync';
 import colors from 'colors';
 import fs from 'fs';
@@ -22,13 +23,21 @@ import { fileURLToPath } from 'url';
 import Student from './src/Student.js';
 import StudentManager from './src/StudentManager.js';
 
-// Get current directory for ES modules
+// Get current directory path and define constants
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const DATA_FILE = path.join(__dirname, 'students.json');
-
-// Inisialisasi StudentManager
+const MAX_WIDTH = 60;
 const manager = new StudentManager();
+
+/**
+ * Display title dengan border
+ */
+function displayTitle(title) {
+  console.log('\n' + '━'.repeat(MAX_WIDTH).cyan);
+  console.log(title.padStart((MAX_WIDTH + title.length) / 2).bold.cyan);
+  console.log('━'.repeat(MAX_WIDTH).cyan);
+}
 
 /**
  * Memuat data dari file JSON
@@ -39,9 +48,9 @@ function loadData() {
       const data = fs.readFileSync(DATA_FILE, 'utf8');
       const studentsData = JSON.parse(data);
       manager.fromJSON(studentsData);
-      console.log(`✓ Data berhasil dimuat (${studentsData.length} siswa)`.green);
+      console.log(` ✓  Data berhasil dimuat (${studentsData.length} siswa)`.cyan);
     } else {
-      console.log('⚠ File data tidak ditemukan, membuat file baru...'.yellow);
+      console.log(' ⚠  File data tidak ditemukan, membuat file baru...'.red);
       saveData();
     }
   } catch (error) {
@@ -72,35 +81,35 @@ function isValidStudentId(id) {
  * Menampilkan menu utama
  */
 function displayMenu() {
-  console.log('\n' + '═'.repeat(50).cyan.bold);
-  console.log('     📚 SISTEM MANAJEMEN NILAI SISWA 📚     '.bold.white);
-  console.log('═'.repeat(50).cyan.bold);
-  console.log('  1. Tambah Siswa Baru'.green);
-  console.log('  2. Lihat Semua Siswa'.green);
-  console.log('  3. Cari Siswa'.green);
-  console.log('  4. Update Data Siswa'.yellow);
-  console.log('  5. Hapus Siswa'.red);
-  console.log('  6. Tambah Nilai Siswa'.blue);
-  console.log('  7. Lihat Top 3 Siswa'.magenta);
-  console.log('  8. Statistik Kelas'.cyan + ' (BONUS)'.gray);
-  console.log('  9. Keluar'.white);
-  console.log('═'.repeat(50).cyan.bold);
+  console.log(`
+┌──────────────────────────────────────────────────────────┐
+│               SISTEM MANAJEMEN NILAI SISWA               │
+├──────────────────────────────────────────────────────────┤
+│  1. Tambah Siswa Baru                                    │
+│  2. Lihat Semua Siswa                                    │
+│  3. Cari Siswa                                           │
+│  4. Update Data Siswa                                    │
+│  5. Hapus Siswa                                          │
+│  6. Tambah Nilai Siswa                                   │
+│  7. Lihat Top 3 Siswa                                    │
+│  8. Statistik Kelas                                      │
+├──────────────────────────────────────────────────────────┤
+│  0. Keluar                                               │
+└──────────────────────────────────────────────────────────┘`.cyan);
 }
 
 /**
  * Handler untuk menambah siswa baru
  */
 function addNewStudent() {
-  console.log('\n' + '━'.repeat(50).green);
-  console.log('   ➕ TAMBAH SISWA BARU'.bold.green);
-  console.log('━'.repeat(50).green);
+  displayTitle('TAMBAH SISWA BARU');
   
   let id;
   let isValidId = false;
   
   // Validasi format ID dengan loop hingga valid
   while (!isValidId) {
-    id = readlineSync.question('\nMasukkan ID Siswa (format: S001, S002, ...): '.cyan);
+    id = readlineSync.question('Masukkan ID Siswa (format: S001, S002, ...): '.cyan);
     
     if (!isValidStudentId(id)) {
       console.log('✗ Format ID tidak valid! Harus menggunakan format S diikuti 3 digit angka (contoh: S001, S012)'.red);
@@ -148,9 +157,7 @@ function viewAllStudents() {
  * Handler untuk mencari siswa berdasarkan ID
  */
 function searchStudent() {
-  console.log('\n' + '━'.repeat(50).blue);
-  console.log('   🔍 CARI SISWA'.bold.blue);
-  console.log('━'.repeat(50).blue);
+  displayTitle('CARI SISWA');
   
   const id = readlineSync.question('\nMasukkan ID Siswa: '.cyan);
   const student = manager.findStudent(id);
@@ -166,9 +173,7 @@ function searchStudent() {
  * Handler untuk update data siswa
  */
 function updateStudent() {
-  console.log('\n' + '━'.repeat(50).yellow);
-  console.log('   ✏️  UPDATE DATA SISWA'.bold.yellow);
-  console.log('━'.repeat(50).yellow);
+  displayTitle('UPDATE DATA SISWA');
   
   const id = readlineSync.question('\nMasukkan ID Siswa: '.cyan);
   const student = manager.findStudent(id);
@@ -178,10 +183,10 @@ function updateStudent() {
     return;
   }
   
-  console.log('\n📋 Data saat ini:'.bold);
+  console.log('\n Data saat ini:'.bold);
   student.displayInfo();
   
-  console.log('\n' + 'ℹ️  Kosongkan jika tidak ingin mengubah'.gray.italic);
+  console.log('\n' + '  Kosongkan jika tidak ingin mengubah'.gray.italic);
   
   const newName = readlineSync.question('Nama baru (Enter untuk skip): '.cyan);
   const newClass = readlineSync.question('Kelas baru (Enter untuk skip): '.cyan);
@@ -202,7 +207,7 @@ function updateStudent() {
   if (manager.updateStudent(id, updateData)) {
     console.log('\n✓ Data siswa berhasil diupdate!'.green.bold);
     saveData(); // Simpan data setelah operasi
-    console.log('\n📋 Data setelah update:'.bold);
+    console.log('\n Data setelah update:'.bold);
     student.displayInfo();
   } else {
     console.log('\n✗ Gagal mengupdate data siswa!'.red);
@@ -213,9 +218,7 @@ function updateStudent() {
  * Handler untuk menghapus siswa
  */
 function deleteStudent() {
-  console.log('\n' + '━'.repeat(50).red);
-  console.log('   🗑️  HAPUS SISWA'.bold.red);
-  console.log('━'.repeat(50).red);
+  displayTitle('HAPUS SISWA');
   
   const id = readlineSync.question('\nMasukkan ID Siswa: '.cyan);
   const student = manager.findStudent(id);
@@ -225,7 +228,7 @@ function deleteStudent() {
     return;
   }
   
-  console.log('\n📋 Data siswa yang akan dihapus:'.bold);
+  console.log('\n Data siswa yang akan dihapus:'.bold);
   student.displayInfo();
   
   const confirmation = readlineSync.question('\n⚠️  Apakah Anda yakin ingin menghapus siswa ini? (Y/N): '.red.bold);
@@ -246,9 +249,7 @@ function deleteStudent() {
  * Handler untuk menambah nilai siswa
  */
 function addGradeToStudent() {
-  console.log('\n' + '━'.repeat(50).blue);
-  console.log('   📝 TAMBAH NILAI SISWA'.bold.blue);
-  console.log('━'.repeat(50).blue);
+  displayTitle('TAMBAH NILAI SISWA');
   
   const id = readlineSync.question('\nMasukkan ID Siswa: '.cyan);
   const student = manager.findStudent(id);
@@ -258,7 +259,7 @@ function addGradeToStudent() {
     return;
   }
   
-  console.log('\n📋 Data siswa:'.bold);
+  console.log('\n Data siswa:'.bold);
   console.log(`  Nama: ${student.name}`.yellow);
   console.log(`  Kelas: ${student.class}`.yellow);
   
@@ -284,7 +285,7 @@ function addGradeToStudent() {
     console.log(`\n✓ Nilai ${subject} (${score}) berhasil ditambahkan untuk ${student.name}!`.green.bold);
     saveData(); // Simpan data setelah operasi
     
-    console.log('\n📊 Ringkasan Nilai:'.bold);
+    console.log('\n Ringkasan Nilai:'.bold);
     console.log(`  Rata-rata: ${student.getAverage().toFixed(2)}`.yellow);
     console.log(`  Status: ${student.getGradeStatus() === "Lulus" ? student.getGradeStatus().green : student.getGradeStatus().red}`);
   } else {
@@ -296,9 +297,7 @@ function addGradeToStudent() {
  * Handler untuk melihat top students
  */
 function viewTopStudents() {
-  console.log('\n' + '━'.repeat(50).magenta);
-  console.log('   🏆 TOP 3 SISWA TERBAIK'.bold.magenta);
-  console.log('━'.repeat(50).magenta);
+  displayTitle('TOP 3 SISWA TERBAIK');
   
   const topStudents = manager.getTopStudents(3);
   
@@ -318,9 +317,7 @@ function viewTopStudents() {
  * BONUS: Handler untuk statistik kelas
  */
 function viewClassStatistics() {
-  console.log('\n' + '━'.repeat(50).cyan);
-  console.log('   📊 STATISTIK KELAS'.bold.cyan);
-  console.log('━'.repeat(50).cyan);
+  displayTitle('STATISTIK KELAS SISWA');
   
   const className = readlineSync.question('\nMasukkan Nama Kelas: '.cyan);
   const stats = manager.getClassStatistics(className);
@@ -344,7 +341,7 @@ function viewClassStatistics() {
   
   // Tampilkan daftar siswa di kelas ini
   const students = manager.getStudentsByClass(className);
-  console.log(`\n📋 Daftar Siswa di Kelas ${className}:`.bold);
+  console.log(`\n Daftar Siswa di Kelas ${className}:`.bold);
   students.forEach((student, index) => {
     const status = student.getGradeStatus() === "Lulus" ? "✓".green : "✗".red;
     console.log(`  ${index + 1}. ${student.name.padEnd(20)} (${student.id}) - Rata-rata: ${student.getAverage().toFixed(2)} ${status}`);
@@ -352,64 +349,115 @@ function viewClassStatistics() {
 }
 
 /**
+ * Menampilkan animasi loading dengan Progress Bar
+ */
+function showLoadingAnimation(text, duration) {
+    return new Promise(resolve => {
+        const BAR_LENGTH = 30;
+        let elapsed = 0;
+        const intervalTime = 10;
+
+        // Initial output: memastikan kursor berada di awal baris baru
+        process.stdout.write(``);
+        
+        const interval = setInterval(() => {
+            elapsed += intervalTime;
+            
+            // Hitung progress
+            let progress = Math.min(1, elapsed / duration); 
+            const percent = Math.floor(progress * 100);
+            
+            // Hitung bar yang terisi
+            const filledLength = Math.floor(progress * BAR_LENGTH);
+            const emptyLength = BAR_LENGTH - filledLength;
+            
+            // Buat string bar
+            const filledBar = '█'.repeat(filledLength).bgGreen.cyan;
+            const emptyBar = ' '.repeat(emptyLength).bgBlack.black;
+            
+            // Teks status
+            const statusText = `${filledBar}${emptyBar} ${String(percent).padStart(3)}% ${text}`;
+            
+            // Pindahkan kursor ke awal baris dan cetak ulang
+            process.stdout.cursorTo(0);
+            process.stdout.write(statusText);
+
+            if (elapsed >= duration) {
+                clearInterval(interval);
+                
+                // Final Success Display
+                process.stdout.cursorTo(0);
+                process.stdout.write(' '.repeat(statusText.length + 5)); // Bersihkan baris
+                process.stdout.cursorTo(0);
+                
+                resolve();
+            }
+        }, intervalTime);
+    });
+}
+
+/**
  * Main program loop
  */
-function main() {
-  console.clear();
-  console.log('\n' + '★'.repeat(60).rainbow);
-  console.log('     SELAMAT DATANG DI SISTEM MANAJEMEN NILAI SISWA     '.bold.white);
-  console.log('★'.repeat(60).rainbow);
-  
-  // Load data dari file
-  loadData();
-  
-  let running = true;
-  
-  while (running) {
-    displayMenu();
+
+async function main() {
+    console.clear();
+
+    displayTitle('SELAMAT DATANG DI SISTEM MANAJEMEN NILAI SISWA');
+
+    await showLoadingAnimation('Memuat data siswa...', 500);
+
+    loadData(); 
     
-    const choice = readlineSync.question('\nPilih menu (1-9): '.bold.cyan);
+    let running = true;
     
-    switch (choice) {
-      case '1':
-        addNewStudent();
-        break;
-      case '2':
-        viewAllStudents();
-        break;
-      case '3':
-        searchStudent();
-        break;
-      case '4':
-        updateStudent();
-        break;
-      case '5':
-        deleteStudent();
-        break;
-      case '6':
-        addGradeToStudent();
-        break;
-      case '7':
-        viewTopStudents();
-        break;
-      case '8':
-        viewClassStatistics();
-        break;
-      case '9':
-        console.log('\n' + '═'.repeat(50).cyan);
-        console.log('  👋 Terima kasih telah menggunakan aplikasi ini!  '.bold.white);
-        console.log('═'.repeat(50).cyan + '\n');
-        running = false;
-        break;
-      default:
-        console.log('\n✗ Pilihan tidak valid! Silakan pilih 1-9.'.red);
+    while (running) {
+        // console.clear();
+        
+        displayMenu();
+        
+        const choice = readlineSync.question('\nPilih menu (0-8): '.bold.cyan);
+        
+        switch (choice) {
+            case '1':
+                addNewStudent();
+                break;
+            case '2':
+                viewAllStudents();
+                break;
+            case '3':
+                searchStudent();
+                break;
+            case '4':
+                updateStudent();
+                break;
+            case '5':
+                deleteStudent();
+                break;
+            case '6':
+                addGradeToStudent();
+                break;
+            case '7':
+                viewTopStudents();
+                break;
+            case '8':
+                viewClassStatistics();
+                break;
+            case '0':
+                console.clear();
+                console.log('Terima kasih telah menggunakan aplikasi ini!'.cyan);
+                console.log('✓ Keluar dari aplikasi...'.cyan);
+                running = false;
+                break;
+            default:
+                console.log('\n✗ Pilihan tidak valid! Silakan pilih 0-8.'.red);
+        }
+        
+        // Pause sebelum kembali ke menu (kecuali exit)
+        if (running && choice !== '0') {
+            readlineSync.question('\nTekan Enter untuk kembali ke menu...'.gray);
+        }
     }
-    
-    // Pause sebelum kembali ke menu (kecuali exit)
-    if (running && choice !== '9') {
-      readlineSync.question('\nTekan Enter untuk kembali ke menu...'.gray);
-    }
-  }
 }
 
 // Jalankan aplikasi

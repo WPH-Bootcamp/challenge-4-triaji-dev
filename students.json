@@ -2,9 +2,27 @@
   {
     "id": "S001",
     "name": "Pangeran Diponegoro",
-    "class": "1A",
+    "class": "10A",
     "grades": {
-      "Bahasa Indonesia": 95
+      "Bahasa Indonesia": 95,
+      "Matematika": 88,
+      "Bahasa Inggris": 85,
+      "Kimia": 92,
+      "Fisika": 90,
+      "Biologi": 89
+    }
+  },{
+    "id": "S002",
+    "name": "Cut Nyak Dien",
+    
+    "class": "10A",
+    "grades": {
+      "Bahasa Indonesia": 58,
+      "Matematika": 36,
+      "Bahasa Inggris": 85,
+      "Kimia": 88,    
+      "Fisika": 69,
+      "Biologi": 35
     }
   }
 ]
