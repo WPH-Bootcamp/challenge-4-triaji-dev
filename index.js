@@ -1,22 +1,9 @@
 /**
  * Main Application - CLI Interface
- * File ini adalah entry point aplikasi
- * 
- * Implementasi CLI interface yang interaktif dengan menu:
- * 1. Tambah Siswa Baru
- * 2. Lihat Semua Siswa
- * 3. Cari Siswa (by ID)
- * 4. Update Data Siswa
- * 5. Hapus Siswa
- * 6. Tambah Nilai Siswa
- * 7. Lihat Top 3 Siswa
- * 8. Statistik Kelas (BONUS)
- * 9. Keluar
  */
 
 // Import modules
 import readlineSync from 'readline-sync';
-import colors from 'colors';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -83,16 +70,20 @@ function isValidStudentId(id) {
 function displayMenu() {
   console.log(`
 ┌──────────────────────────────────────────────────────────┐
-│               SISTEM MANAJEMEN NILAI SISWA               │
+│              SISTEM MANAJEMEN NILAI SISWA                │
 ├──────────────────────────────────────────────────────────┤
-│  1. Tambah Siswa Baru                                    │
-│  2. Lihat Semua Siswa                                    │
-│  3. Cari Siswa                                           │
-│  4. Update Data Siswa                                    │
-│  5. Hapus Siswa                                          │
-│  6. Tambah Nilai Siswa                                   │
-│  7. Lihat Top 3 Siswa                                    │
-│  8. Statistik Kelas                                      │
+│  `.cyan +` Daftar Siswa : `.bgCyan + `                                        │
+│  1. Daftar Seluruh Siswa                                 │
+│  2. Daftar Statistik Kelas                               │
+│  3. Daftar Siswa Terbaik (Top 3)                         │
+│  4. Cari Siswa                                           │
+├──────────────────────────────────────────────────────────┤
+│  `.cyan +` Kelola Siswa : `.bgCyan + `                                        │
+│  5. Tambah Siswa Baru                                    │
+│  6. Ubah Data Siswa                                      │
+│  7. Hapus Data Siswa                                     │
+│  8. Ubah Nilai Siswa                                     │
+│  9. Ubah Mata Pelajaran                                  │
 ├──────────────────────────────────────────────────────────┤
 │  0. Keluar                                               │
 └──────────────────────────────────────────────────────────┘`.cyan);
@@ -420,28 +411,28 @@ async function main() {
         
         switch (choice) {
             case '1':
-                addNewStudent();
-                break;
-            case '2':
                 viewAllStudents();
                 break;
+            case '2':
+                viewClassStatistics();
+                break;
             case '3':
-                searchStudent();
-                break;
-            case '4':
-                updateStudent();
-                break;
-            case '5':
-                deleteStudent();
-                break;
-            case '6':
-                addGradeToStudent();
-                break;
-            case '7':
                 viewTopStudents();
                 break;
+            case '4':
+                searchStudent();
+                break;
+            case '5':
+                addNewStudent();
+                break;
+            case '6':
+                updateStudent();
+                break;
+            case '7':
+                deleteStudent();
+                break;
             case '8':
-                viewClassStatistics();
+                addGradeToStudent();
                 break;
             case '0':
                 console.clear();
