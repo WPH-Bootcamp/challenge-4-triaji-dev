@@ -218,8 +218,8 @@ class UIHandler {
 │  8. Perbarui Nilai Siswa                                 │
 ├──────────────────────────────────────────────────────────┤
 │  `.cyan +
-        ` Kelola Kelas & Mapel : `.bold.bgCyan +
-        `                                │
+        ` Kelola Kelas & Mata Pelajaran : `.bold.bgCyan +
+        `                       │
 │  9. Kelola Kelas (Perbarui/Tambah)                       │
 │  10. Kelola Mata Pelajaran (Perbarui/Tambah)             │
 ├──────────────────────────────────────────────────────────┤
@@ -947,33 +947,31 @@ function manageSubjectNames() {
     }
   }
 }
-
 /**
 ┌────────────────────────────────────┐
-│          6. Main Function          │
+│          6. Main Function          │
 └────────────────────────────────────┘
 */
 
-//  Main function untuk menjalankan aplikasi
+//  Main function untuk menjalankan aplikasi
 async function main() {
   console.clear();
   UIHandler.displayTitle('SELAMAT DATANG DI SISTEM MANAJEMEN NILAI SISWA');
 
   await UIHandler.showLoadingAnimation('Memuat data siswa...');
-  const loadResult = dataService.loadData();
 
-  // Perbaikan: Jika gagal memuat data, tampilkan pesan error dan keluar
-  if (!loadResult.success) {
-    console.error(`\n✗ Gagal memuat data: ${loadResult.error}`.red.bold);
+  try {
+    const loadResult = dataService.loadData();
+
+    if (loadResult.count > 0) {
+      console.log(` ✓  Data berhasil dimuat (${loadResult.count} siswa)`.cyan);
+    } else if (loadResult.message) {
+      console.log(` ⚠  ${loadResult.message}`.red);
+    }
+  } catch (error) {
+    console.error(`\n✗ Gagal memuat data: ${error.message}`.red.bold);
     console.log('✗ Aplikasi dihentikan karena kegagalan memuat data.'.red);
     return;
-  }
-
-  // Lanjutkan hanya jika pemuatan berhasil
-  if (loadResult.count > 0) {
-    console.log(` ✓  Data berhasil dimuat (${loadResult.count} siswa)`.cyan);
-  } else if (loadResult.message) {
-    console.log(` ⚠  ${loadResult.message}`.red);
   }
 
   let running = true;
@@ -1028,6 +1026,5 @@ async function main() {
     }
   }
 }
-
 // Jalankan aplikasi
 main();

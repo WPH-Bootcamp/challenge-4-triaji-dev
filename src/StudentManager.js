@@ -243,6 +243,10 @@ export default class StudentManager {
     return [...this.#subjectNames];
   }
 
+  getAllStudents() {
+    return [...this.#students];
+  }
+
   // --- STATISTICS ---
 
   getTopStudents(n = 3) {

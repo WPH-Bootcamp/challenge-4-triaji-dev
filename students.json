@@ -110,7 +110,7 @@
     },
     {
       "id": "S010",
-      "name": "Martha Christina Tiahahu",
+      "name": "Martha C. Tiahahu",
       "class": "10c",
       "grades": {
         "Bahasa Indonesia": 75,
@@ -194,7 +194,7 @@
     },
     {
       "id": "S017",
-      "name": "Dr. Cipto Mangunkusumo",
+      "name": "Cipto Mangunkusumo",
       "class": "10d",
       "grades": {
         "Bahasa Indonesia": 75,
@@ -218,7 +218,7 @@
     },
     {
       "id": "S019",
-      "name": "Dr. Wahidin Sudirohusodo",
+      "name": "Wahidin S.",
       "class": "10d",
       "grades": {
         "Bahasa Indonesia": 68,
@@ -278,7 +278,7 @@
     },
     {
       "id": "S024",
-      "name": "Wage Rudolf Supratman",
+      "name": "W. R. Supratman",
       "class": "10a",
       "grades": {
         "Bahasa Indonesia": 88,
@@ -362,7 +362,7 @@
     },
     {
       "id": "S031",
-      "name": "Sultan Agung Hanyokrokusumo",
+      "name": "Sultan Agung H.",
       "class": "10a",
       "grades": {
         "Bahasa Indonesia": 65,
@@ -386,7 +386,7 @@
     },
     {
       "id": "S033",
-      "name": "Sultan Syarif Kasim II",
+      "name": "Sultan Syarif",
       "class": "10b",
       "grades": {
         "Bahasa Indonesia": 75,
@@ -434,7 +434,7 @@
     },
     {
       "id": "S037",
-      "name": "Prof. Dr. Soepomo",
+      "name": "Soepomo",
       "class": "10b",
       "grades": {
         "Bahasa Indonesia": 77,
@@ -481,12 +481,7 @@
       }
     }
   ],
-  "classNames": [
-    "10a",
-    "10b",
-    "10c",
-    "10d"
-  ],
+  "classNames": ["10a", "10b", "10c", "10d"],
   "subjectNames": [
     "Bahasa Indonesia",
     "Bahasa Inggris",
