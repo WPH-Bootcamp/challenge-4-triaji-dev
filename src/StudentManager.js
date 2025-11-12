@@ -1,19 +1,3 @@
-/**
- * Class StudentManager
- * Mengelola koleksi siswa dan operasi-operasi terkait
- * 
- * Implementasi class StudentManager dengan:
- * - Constructor untuk inisialisasi array students
- * - Method addStudent(student) untuk menambah siswa
- * - Method removeStudent(id) untuk menghapus siswa
- * - Method findStudent(id) untuk mencari siswa
- * - Method updateStudent(id, data) untuk update data siswa
- * - Method getAllStudents() untuk mendapatkan semua siswa
- * - Method getTopStudents(n) untuk mendapatkan top n siswa
- * - Method displayAllStudents() untuk menampilkan semua siswa
- * - BONUS: getStudentsByClass() dan getClassStatistics()
- */
-
 import colors from 'colors';
 import Student from './Student.js';
 

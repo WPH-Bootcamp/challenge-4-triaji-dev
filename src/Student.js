@@ -1,17 +1,3 @@
-/**
- * Class Student
- * Representasi dari seorang siswa dengan data dan nilai-nilainya
- * 
- * Implementasi class Student dengan:
- * - Constructor untuk inisialisasi properti (id, name, class, grades)
- * - Method addGrade(subject, score) untuk menambah nilai mata pelajaran
- * - Method getAverage() untuk menghitung rata-rata nilai
- * - Method getGradeStatus() untuk menentukan status Lulus/Tidak Lulus
- * - Method displayInfo() untuk menampilkan informasi siswa
- * 
- * Kriteria Lulus: rata-rata >= 75
- */
-
 import colors from 'colors';
 
 class Student {
