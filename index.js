@@ -156,7 +156,7 @@ class UIHandler {
   // Menampilkan animasi loading di console
   static showLoadingAnimation(text) {
     return new Promise(resolve => {
-      const BAR_LENGTH = 30;
+      const BAR_LENGTH = 50;
       let elapsed = 0;
       const intervalTime = 10;
       const duration = CONFIG.LOADING_DURATION;
@@ -958,7 +958,7 @@ async function main() {
   console.clear();
   UIHandler.displayTitle('SELAMAT DATANG DI SISTEM MANAJEMEN NILAI SISWA');
 
-  await UIHandler.showLoadingAnimation('Memuat data siswa...');
+  await UIHandler.showLoadingAnimation('Memuat...');
 
   try {
     const loadResult = dataService.loadData();
