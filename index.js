@@ -354,6 +354,33 @@ class UIHandler {
     }
     console.log('═'.repeat(50).cyan);
   }
+
+  // Menampilkan daftar siswa hasil pencarian yang lebih detail
+  static displayFoundStudents(students, title) {
+    if (students.length === 0) {
+      console.log(`\n✗ Tidak ada siswa ditemukan dalam kategori ${title}.`.red);
+      return;
+    }
+
+    console.log(`\n═`.repeat(70).cyan.bold);
+    console.log(`       DAFTAR SISWA HASIL PENCARIAN (${title})`.bold.cyan);
+    console.log(`═`.repeat(70).cyan.bold);
+
+    students.forEach((s, i) => {
+      const status =
+        s.getGradeStatus() === 'Lulus'
+          ? 'Lulus'.green.bold
+          : 'Tidak Lulus'.red.bold;
+      console.log(
+        `  ${(i + 1).toString().padStart(2)}. ${s.id.yellow} - ${s.name.padEnd(
+          20
+        )} - Kelas: ${s.class.padEnd(10)} - Rata-rata: ${s
+          .getAverage()
+          .toFixed(2)} - Status: ${status}`
+      );
+    });
+    console.log('═'.repeat(70).cyan.bold);
+  }
 }
 
 /**
@@ -439,8 +466,9 @@ function viewClassStatistics() {
     return;
   }
 
-  const choices = classNames.map(c => c.yellow);
+  const choices = classNames.map(c => c.toUpperCase().yellow); // menampilkan pilihan
   const choiceIndex = readlineSync.keyInSelect(
+    // input pilihan
     choices,
     'Pilih kelas (0 untuk batal):'
   );
@@ -537,11 +565,178 @@ function viewAllStudents() {
   }
 }
 
+// --- FUNGSI PENCARIAN searchStudent()) ---
+
+// 1. Mencari berdasarkan kelas
+function searchStudentByClass() {
+  UIHandler.displayTitle('CARI BERDASARKAN KELAS');
+  const classNames = manager.getAllClassNames();
+
+  if (classNames.length === 0) {
+    console.log('\n⚠ Belum ada kelas yang terdaftar.'.yellow);
+    return;
+  }
+
+  const choices = classNames.map(c => c.toUpperCase().yellow);
+  const choiceIndex = readlineSync.keyInSelect(
+    choices,
+    'Pilih kelas yang akan dicari (0 untuk batal):'
+  );
+
+  if (choiceIndex === -1) {
+    console.log('\n⚠ Pencarian dibatalkan.'.yellow);
+    return;
+  }
+
+  const className = classNames[choiceIndex];
+  const students = manager.getStudentsByClass(className);
+
+  UIHandler.displayFoundStudents(students, `Kelas ${className}`);
+}
+
+// 2. Mencari berdasarkan status kelulusan
+function searchStudentByGradeStatus() {
+  UIHandler.displayTitle('CARI BERDASARKAN STATUS KELULUSAN');
+  const choices = ['Lulus', 'Tidak Lulus'];
+  const choiceIndex = readlineSync.keyInSelect(
+    choices,
+    'Pilih Status Kelulusan (0 untuk batal):'
+  );
+
+  if (choiceIndex === -1) {
+    console.log('\n⚠ Pencarian dibatalkan.'.yellow);
+    return;
+  }
+
+  const targetStatus = choices[choiceIndex];
+  const allStudents = manager.getAllStudents();
+
+  const foundStudents = allStudents.filter(
+    s => s.getGradeStatus() === targetStatus
+  );
+
+  UIHandler.displayFoundStudents(foundStudents, `Status ${targetStatus}`);
+}
+
+// 3. Mencari berdasarkan nilai mata pelajaran
+function searchStudentBySubjectScore() {
+  UIHandler.displayTitle('CARI BERDASARKAN NILAI MATA PELAJARAN');
+  const subjectNames = manager.getAllSubjectNames();
+
+  if (subjectNames.length === 0) {
+    console.log(
+      '\n⚠ Belum ada mata pelajaran yang terdaftar. Harap daftarkan mapel di Menu 10.'
+        .yellow
+    );
+    return;
+  }
+
+  const choices = subjectNames.map(c => c.yellow);
+  const subjectChoiceIndex = readlineSync.keyInSelect(
+    choices,
+    '\nPilih Mata Pelajaran (0 untuk batal):'
+  );
+
+  if (subjectChoiceIndex === -1) {
+    console.log('\n⚠ Pencarian dibatalkan.'.yellow);
+    return;
+  }
+
+  const selectedSubject = subjectNames[subjectChoiceIndex];
+
+  console.log('\n--- Kriteria Nilai ---'.bold);
+  const operators = ['Lebih dari (>)...', 'Kurang dari (<)...'];
+  const operatorChoice = readlineSync.keyInSelect(
+    operators,
+    'Pilih Operator Perbandingan (0 untuk batal):'
+  );
+
+  if (operatorChoice === -1) {
+    console.log('\n⚠ Pencarian dibatalkan.'.yellow);
+    return;
+  }
+
+  let targetScore;
+  let isValidScore = false;
+
+  while (!isValidScore) {
+    const scoreInput = readlineSync.question(
+      `Masukkan Nilai batas (0-100): `.cyan
+    );
+    targetScore = parseFloat(scoreInput);
+
+    if (isNaN(targetScore) || !Validator.isValidGrade(targetScore)) {
+      console.log(
+        '✗ Nilai tidak valid! Nilai harus berupa angka antara 0-100.'.red
+      );
+    } else {
+      isValidScore = true;
+    }
+  }
+
+  const allStudents = manager.getAllStudents();
+  let foundStudents = [];
+  const operatorText = operators[operatorChoice];
+
+  // Logic Pencarian
+  if (operatorChoice === 0) {
+    // Lebih dari (>)
+    foundStudents = allStudents.filter(s => {
+      const grade = s.getGrades()[selectedSubject];
+      return grade !== undefined && grade > targetScore;
+    });
+  } else if (operatorChoice === 1) {
+    // Kurang dari (<)
+    foundStudents = allStudents.filter(s => {
+      const grade = s.getGrades()[selectedSubject];
+      return grade !== undefined && grade < targetScore;
+    });
+  }
+
+  UIHandler.displayFoundStudents(
+    foundStudents,
+    `${selectedSubject} ${operatorText.replace('...', targetScore)}`
+  );
+}
+
+// --- FUNGSI UTAMA MENU 5 (SUDAH DIPERBAIKI DAN DIBUAT LEBIH COMPACT) ---
 // Mencari dan menampilkan informasi siswa
 function searchStudent() {
-  const student = selectStudentInteractive('CARI SISWA');
-  if (student) {
-    UIHandler.displayStudentInfo(student);
+  UIHandler.displayTitle('CARI SISWA');
+  console.log('\nPilih Kategori Pencarian:'.bold);
+
+  // 1. Definisikan pilihan teks
+  const choices = [
+    'Cari berdasarkan ID atau Nama',
+    'Cari berdasarkan Kelas',
+    'Cari berdasarkan Status Kelulusan',
+    'Cari berdasarkan Nilai Mata Pelajaran',
+  ];
+
+  // 2. Definisikan fungsi yang sesuai dengan indeks pilihan
+  const handlers = [
+    () => {
+      const student = findStudentByIdOrNameInteractive();
+      if (student) {
+        UIHandler.displayStudentInfo(student);
+      }
+    },
+    searchStudentByClass,
+    searchStudentByGradeStatus,
+    searchStudentBySubjectScore,
+  ];
+
+  const choiceIndex = readlineSync.keyInSelect(
+    choices,
+    'Pilih Cara (0 untuk batal):'
+  );
+
+  // Panggil fungsi berdasarkan indeks pilihan
+  if (choiceIndex >= 0 && choiceIndex < handlers.length) {
+    handlers[choiceIndex]();
+  } else {
+    console.log('\n⚠ Pencarian dibatalkan.'.yellow);
+    return;
   }
 }
 
