@@ -35,11 +35,7 @@ const __dirname = path.dirname(__filename);
 // --- File Configuration ---
 const DATA_FILE = path.join(__dirname, CONFIG.DATA_FILE_NAME);
 
-/**
- * Utility function to capitalize the first letter of each word.
- * @param {string} str
- * @returns {string}
- */
+// capitalize function
 export function capitalize(str) {
   if (!str) return '';
   return str
@@ -58,29 +54,17 @@ export function capitalize(str) {
 */
 
 export class Validator {
-  /**
-   * Memastikan ID siswa menggunakan format S diikuti 3 digit angka (e.g., S001).
-   * @param {string} id
-   * @returns {boolean}
-   */
+  // Memastikan format ID siswa sesuai (S diikuti 3 digit angka)
   static isValidStudentId(id) {
     return /^S\d{3}$/.test(id);
   }
 
-  /**
-   * Memastikan nama tidak kosong.
-   * @param {string} name
-   * @returns {boolean}
-   */
+  // Memastikan nama tidak kosong
   static isValidName(name) {
     return !!name && name.trim() !== '';
   }
 
-  /**
-   * Memastikan nilai merupakan angka antara MIN_GRADE dan MAX_GRADE.
-   * @param {number} score
-   * @returns {boolean}
-   */
+  // Memastikan nilai berada dalam range yang valid
   static isValidGrade(score) {
     return (
       typeof score === 'number' &&
@@ -97,10 +81,7 @@ export class Validator {
 */
 
 class DataService {
-  /**
-   * @param {StudentManager} manager
-   * @param {string} dataFilePath
-   */
+  // Menginisialisasi dengan StudentManager dan path file data
   constructor(manager, dataFilePath) {
     this.manager = manager;
     this.DATA_FILE = dataFilePath;
@@ -156,10 +137,11 @@ class DataService {
 
 /**
 ┌────────────────────────────────────┐
-│          4. UIHandler Class        │
+│          4. UI Handler Class       │
 └────────────────────────────────────┘
 */
 
+// Class untuk menangani tampilan UI di console
 class UIHandler {
   static displayTitle(title) {
     const padding = (CONFIG.MAX_WIDTH + title.length) / 2;
@@ -171,6 +153,7 @@ class UIHandler {
     console.log('━'.repeat(CONFIG.MAX_WIDTH).cyan);
   }
 
+  // Menampilkan animasi loading di console
   static showLoadingAnimation(text) {
     return new Promise(resolve => {
       const BAR_LENGTH = 30;
@@ -209,6 +192,7 @@ class UIHandler {
     });
   }
 
+  // Menampilkan menu utama
   static displayMenu() {
     console.log(
       `
@@ -244,6 +228,7 @@ class UIHandler {
     );
   }
 
+  // Menampilkan informasi detail siswa
   static displayStudentInfo(student) {
     const totalSubjects = student.getRegisteredSubjectCount();
     const average = student.getAverage();
@@ -293,6 +278,7 @@ class UIHandler {
     console.log('='.repeat(50).cyan + '\n');
   }
 
+  // Menampilkan ringkasan semua siswa
   static displayAllStudentsSummary(students) {
     if (students.length === 0) {
       console.log('\n' + '⚠ Belum ada data siswa dalam sistem.'.yellow.bold);
@@ -314,6 +300,7 @@ class UIHandler {
     return true;
   }
 
+  // Menampilkan daftar siswa terbaik
   static displayTopStudents(topStudents) {
     if (topStudents.length === 0) {
       console.log(
@@ -329,6 +316,7 @@ class UIHandler {
     });
   }
 
+  // Menampilkan statistik
   static displayStats(title, stats) {
     if (!stats || stats.totalStudents === 0) {
       console.log(`\n✗ Tidak ada data yang tersedia untuk ${title}.`.red);
@@ -377,10 +365,8 @@ class UIHandler {
 const manager = new StudentManager();
 const dataService = new DataService(manager, DATA_FILE);
 
-/**
- * Helper untuk mencari siswa berdasarkan ID atau Nama dalam satu input, dengan loop.
- * @returns {Student|null}
- */
+// --- Helper Functions ---
+// Mencari siswa berdasarkan ID atau Nama secara interaktif
 function findStudentByIdOrNameInteractive() {
   while (true) {
     const query = readlineSync.question(
@@ -420,11 +406,7 @@ function findStudentByIdOrNameInteractive() {
   }
 }
 
-/**
- * Helper untuk mencari siswa berdasarkan ID atau Nama, lalu menampilkan info.
- * @param {boolean} loop - Jika true, akan mengulang sampai input valid atau dibatalkan.
- * @returns {Student|null}
- */
+// Memilih siswa secara interaktif dengan judul tertentu
 function selectStudentInteractive(title) {
   UIHandler.displayTitle(title);
   return findStudentByIdOrNameInteractive();
@@ -432,6 +414,7 @@ function selectStudentInteractive(title) {
 
 // --- Menu 1-3: Statistik Handlers ---
 
+// Menampilkan statistik sekolah
 function viewSchoolStatistics() {
   UIHandler.displayTitle('STATISTIK SEKOLAH');
   const stats = manager.getSchoolStatistics();
@@ -446,6 +429,7 @@ function viewSchoolStatistics() {
   });
 }
 
+// Menampilkan statistik kelas tertentu
 function viewClassStatistics() {
   UIHandler.displayTitle('STATISTIK KELAS');
   const classNames = manager.getAllClassNames();
@@ -503,6 +487,7 @@ function viewClassStatistics() {
   });
 }
 
+// Menampilkan daftar 3 siswa terbaik
 function viewTopStudents() {
   UIHandler.displayTitle('TOP 3 SISWA TERBAIK');
   const topStudents = manager.getTopStudents(3);
@@ -511,7 +496,7 @@ function viewTopStudents() {
 }
 
 // --- Menu 4-8: Student CRUD Handlers ---
-
+// Menampilkan daftar seluruh siswa
 function viewAllStudents() {
   UIHandler.displayTitle('DAFTAR SELURUH SISWA');
   const students = manager.getAllStudents();
@@ -552,6 +537,7 @@ function viewAllStudents() {
   }
 }
 
+// Mencari dan menampilkan informasi siswa
 function searchStudent() {
   const student = selectStudentInteractive('CARI SISWA');
   if (student) {
@@ -559,6 +545,7 @@ function searchStudent() {
   }
 }
 
+// Menambah siswa baru
 function addNewStudent() {
   UIHandler.displayTitle('TAMBAH SISWA BARU');
 
@@ -638,6 +625,7 @@ function addNewStudent() {
   }
 }
 
+// Memperbarui atau menghapus data siswa
 function manageStudentData() {
   const student = selectStudentInteractive('PERBARUI/HAPUS DATA SISWA');
   if (!student) return;
@@ -737,6 +725,7 @@ function manageStudentData() {
   }
 }
 
+// Memperbarui atau menambah nilai siswa
 function addGradeToStudent() {
   const student = selectStudentInteractive('PERBARUI NILAI SISWA');
   if (!student) return;
@@ -799,7 +788,7 @@ function addGradeToStudent() {
 }
 
 // --- Menu 9-10: Data Management Handlers ---
-
+// Memperbarui atau menambah nama kelas
 function manageClassNames() {
   UIHandler.displayTitle('KELOLA NAMA KELAS');
   const classNames = manager.getAllClassNames();
@@ -881,6 +870,7 @@ function manageClassNames() {
   }
 }
 
+// Memperbarui atau menambah nama mata pelajaran
 function manageSubjectNames() {
   UIHandler.displayTitle('KELOLA NAMA MATA PELAJARAN');
   const subjectNames = manager.getAllSubjectNames();
@@ -964,6 +954,7 @@ function manageSubjectNames() {
 └────────────────────────────────────┘
 */
 
+//  Main function untuk menjalankan aplikasi
 async function main() {
   console.clear();
   UIHandler.displayTitle('SELAMAT DATANG DI SISTEM MANAJEMEN NILAI SISWA');
