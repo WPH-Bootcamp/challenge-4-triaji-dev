@@ -699,7 +699,7 @@ function searchStudentBySubjectScore() {
   );
 }
 
-// --- FUNGSI UTAMA MENU 5 (SUDAH DIPERBAIKI DAN DIBUAT LEBIH COMPACT) ---
+// --- FUNGSI UTAMA MENU 5 ---
 // Mencari dan menampilkan informasi siswa
 function searchStudent() {
   UIHandler.displayTitle('CARI SISWA');
