@@ -156,7 +156,7 @@ class UIHandler {
   // Menampilkan animasi loading di console
   static showLoadingAnimation(text) {
     return new Promise(resolve => {
-      const BAR_LENGTH = 50;
+      const BAR_LENGTH = 40;
       let elapsed = 0;
       const intervalTime = 10;
       const duration = CONFIG.LOADING_DURATION;
